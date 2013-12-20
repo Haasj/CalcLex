@@ -1,0 +1,51 @@
+/*
+	Author:		Jonathan Haas
+	Problem:	create a statement by statement interpreter to go with the lexical analyzer for the first lab
+	Psuedocode:	
+	Maitnence Log:
+				11/25/13	started from calcLex lab (fixed to allow different comment parsing, etc.)
+				11/27/13	this maitenence log is bad... I've been working on it for the past few days; did the recursive desnent peice. 
+							debugging took forever, also the extern stuff was annoying
+*/
+
+#include<fstream>
+#include<iostream>
+#include<string>
+#include<iomanip>
+using namespace std;
+
+#include "Lex.h"
+#include "CalcGrammar.h"
+#include "symbolTable.h"
+
+//token declarations	--globals have extern the on one of the declarations
+extern enum CALCTOKENS {EOFSY=0, READSY=1, WRITESY=2, ASSIGNOPP=3, LPARAN=4, RPARAN=5, ADDOPP=6, SUBOPP=7, MULTOPP=8, DIVOPP=9, NUMCONST=10, ID=11};
+
+extern ifstream calcFile;		//global fstream
+extern char tokenString[256];	//global max token length 
+extern string enumText;		//must have this to convert back to the text of the enum; global so i don't have to pass it back
+
+int main(int argc, char *argv[])
+{
+	int tokenNum, tokenCount = 0;
+
+	if(argc != 2)
+	{
+		fprintf(stderr, "Usage: enter one file name\n");
+		return 1;
+	}
+
+	calcFile.open(argv[1], std::ios_base::in);	//will globally open the file
+
+	if(!calcFile.is_open())
+	{
+		fprintf(stderr, "Error: enter valid filename\n");
+		return 1;
+	}
+
+	program();
+
+	calcFile.close();
+	return 0;
+}
+
